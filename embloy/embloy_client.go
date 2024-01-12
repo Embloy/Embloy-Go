@@ -20,7 +20,8 @@ func NewEmbloyClient(clientToken string, session map[string]string) *EmbloyClien
 	return &EmbloyClient{
 		ClientToken: clientToken,
 		Session:     session,
-		BaseURL:     "https://api.embloy.com",
+//		BaseURL:     "https://api.embloy.com",
+		BaseURL:     "http://localhost:3000",
 		APIVersion:  "api/v0",
 	}
 }

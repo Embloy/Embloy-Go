@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-    client := embloy.NewEmbloyClient("your-client-token", map[string]string{
+    client := embloy.NewEmbloyClient("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImV4cCI6MTcwNzY4NDMzMiwidHlwIjoicHJlbWl1bSIsImlhdCI6MTcwNTAyNDA5NywiaXNzIjoibWFua2RlIn0.Xjt10QO0aMQTk-9Ac55koute_Fhlj2ExAlk8CpMnVME", map[string]string{
         "mode":        "job",
         "success_url": "your-success-url",
         "cancel_url":  "your-cancel-url",
