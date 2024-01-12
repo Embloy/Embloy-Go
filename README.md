@@ -6,38 +6,41 @@ Embloy's Go SDK for interacting with your Embloy integration.
 
 Install Embloy-Go SDK:
 
+```go
+import "github.com/embloy/embloy-go/embloy"
 ```
-go get embloy/embloy-go
+
+Then you can run the following command to retrieve the package:
+
+```go
+go get -u github.com/embloy/embloy-go/embloy
 ```
 
 Integrate it in your service:
 
-```
-package main
-
+```go
 import (
     "fmt"
     "github.com/embloy/embloy-go/embloy"
 )
 
-func main() {
+func your-service-endpoint() {
     client := embloy.NewEmbloyClient("your-client-token", map[string]string{
         "mode":        "job",
-        "success_url": "your-success-url",
-        "cancel_url":  "your-cancel-url",
-        "job_slug":    "your-job-slug",
+        "success_url": "/success",
+        "cancel_url":  "/failure",
+        "job_slug":    "job#1",
     })
 
-    result, err := client.MakeRequest()
+    response, err := client.MakeRequest()
     if err != nil {
-        fmt.Println("Error:", err) // Handle error
+        fmt.Println("Error:", err)
         return
     }
 
-    fmt.Println("redirect_url:", result)
+    fmt.Println("redirect_url:", response)
 }
 ```
-
 
 ---
 
