@@ -30,19 +30,14 @@ func NewEmbloyClient(clientToken string, session map[string]string) *EmbloyClien
 func (c *EmbloyClient) MakeRequest() (string, error) {
 	url := fmt.Sprintf("%s/%s/sdk/request/auth/token", c.BaseURL, c.APIVersion)
 	headers := map[string]string{"client_token": c.ClientToken}
-	data := map[string]string{
-		"mode":        c.Session["mode"],
-		"success_url": c.Session["success_url"],
-		"cancel_url":  c.Session["cancel_url"],
-		"job_slug":    c.Session["job_slug"],
-	}
+    data := url.Values{
+        "mode":        {c.Session["mode"]},
+        "success_url": {c.Session["success_url"]},
+        "cancel_url":  {c.Session["cancel_url"]},
+        "job_slug":    {c.Session["job_slug"]},
+    }
 
-	jsonData, err := json.Marshal(data)
-	if err != nil {
-		return "", err
-	}
-
-	request, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
+    request, err := http.NewRequest("POST", url, strings.NewReader(data.Encode()))
 	if err != nil {
 		return "", err
 	}
@@ -50,6 +45,7 @@ func (c *EmbloyClient) MakeRequest() (string, error) {
 	for key, value := range headers {
 		request.Header.Set(key, value)
 	}
+    request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	client := &http.Client{}
 	response, err := client.Do(request)
