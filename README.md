@@ -42,6 +42,13 @@ func your-service-endpoint() {
 }
 ```
 
+## Publish a new release
+
+```bash
+git tag v0.1.x
+git push origin v0.1.x
+```
+
 ---
 
 © Carlo Bortolan, Jan Hummel
