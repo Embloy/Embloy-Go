@@ -64,7 +64,7 @@ func (c *EmbloyClient) handleResponse(response *http.Response) (string, error) {
             return "", err
         }
         requestToken := result["request_token"].(string)
-        return fmt.Sprintf("@%s/sdk/apply?token=%s", c.BaseURL, requestToken), nil
+        return fmt.Sprintf("%s/sdk/apply?token=%s", c.BaseURL, requestToken), nil
     }
 
     return "", fmt.Errorf("Error making request: %s", response.Status)
