@@ -51,3 +51,5 @@ func your-service-endpoint() {
 > contact via [bortolanoffice@embloy.com](mailto:bortolanoffice@embloy.com)
 >
 > Jan Hummel &nbsp;&middot;&nbsp;
+> GitHub [@github4touchdouble](https://github.com/github4touchdouble) &nbsp;&middot;&nbsp;
+> contact via [hummeloffice@embloy.com](mailto:hummeloffice@embloy.com)
