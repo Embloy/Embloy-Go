@@ -25,12 +25,14 @@ import (
 )
 
 func your-service-endpoint() {
-    client := embloy.NewEmbloyClient("your-client-token", map[string]string{
-        "mode":        "job",
-        "success_url": "/success",
-        "cancel_url":  "/failure",
-        "job_slug":    "job#1",
-    })
+	sessionData := embloy.SessionData{
+		Mode:       "job",
+		SuccessURL: "your-success-url",
+		CancelURL:  "your-cancel-url",
+		JobSlug:    "your-job-slug",
+	}
+
+	client := embloy.NewEmbloyClient("your-client-token", sessionData)
 
     response, err := client.MakeRequest()
     if err != nil {
