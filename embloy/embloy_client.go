@@ -71,6 +71,16 @@ func (c *EmbloyClient) MakeRequest() (string, error) {
 	}
 	defer response.Body.Close()
 
+	// Ensure debug info includes response headers if request was made
+	debugInfo := map[string]interface{}{
+		"client_token":     c.ClientToken,
+		"error":            "",
+		"request_headers":  headers,
+		"response_headers": response.Header,
+	}
+
+	fmt.Println("Debug Info:", debugInfo)
+
 	return c.handleResponse(response)
 }
 
