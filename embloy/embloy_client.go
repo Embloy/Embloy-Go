@@ -76,11 +76,9 @@ func (c *EmbloyClient) MakeRequest() (string, error) {
 	for key, value := range headers {
 		request.Header.Set(key, value)
 	}
-	if c.Session.Proxy != nil {
-		request.Header.Set("Content-Type", "application/json")
-	} else {
-		request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	}
+
+	request.Header.Set("Content-Type", "application/json")
+	//request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	request.Header.Set("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:122.0) Gecko/20100101 Firefox/122.0")
 
 	response, err := c.HTTPClient.Do(request)
