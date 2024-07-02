@@ -1,11 +1,12 @@
 package embloy
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
+	"strings"
 )
 
 type HTTPClient interface {
@@ -51,23 +52,24 @@ func (c *EmbloyClient) MakeRequest() (string, error) {
 	}
 
 	headers := map[string]string{"client_token": c.ClientToken}
-	data := SessionData{
-		Mode:       c.Session.Mode,
-		SuccessURL: c.Session.SuccessURL,
-		CancelURL:  c.Session.CancelURL,
-		JobSlug:    c.Session.JobSlug,
+	data := url.Values{
+		"mode":        {c.Session.Mode},
+		"success_url": {c.Session.SuccessURL},
+		"cancel_url":  {c.Session.CancelURL},
+		"job_slug":    {c.Session.JobSlug},
 	}
+
 	if c.Session.Proxy != nil {
-		data.Proxy = c.Session.Proxy
+		proxyData, ok := c.Session.Proxy.(map[string]string)
+		if !ok {
+			return "", errors.New("proxy data is not in the expected format")
+		}
+		for key, value := range proxyData {
+			data.Set(key, value)
+		}
 	}
 
-	jsonData, err := json.Marshal(data)
-	if err != nil {
-		fmt.Println("Error marshaling data: ", err)
-		return "", err
-	}
-
-	request, err := http.NewRequest("POST", requestURL, bytes.NewBuffer(jsonData))
+	request, err := http.NewRequest("POST", requestURL, strings.NewReader(data.Encode()))
 	if err != nil {
 		fmt.Println("Error creating request: ", err)
 		return "", err
