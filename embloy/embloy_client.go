@@ -19,6 +19,7 @@ type SessionData struct {
 	SuccessURL string
 	CancelURL  string
 	JobSlug    string
+	Proxy      map[string]string // Used for internal purposes. Ignore this field.
 }
 
 // EmbloyClient represents the Embloy API client.
@@ -46,12 +47,23 @@ func NewEmbloyClient(clientToken string, session SessionData) *EmbloyClient {
 // MakeRequest makes a request to the Embloy API.
 func (c *EmbloyClient) MakeRequest() (string, error) {
 	requestURL := fmt.Sprintf("%s/%s/sdk/request/auth/token", c.APIURL, c.APIVersion)
+	if c.Session.Proxy != nil {
+		requestURL = fmt.Sprintf("%s/%s/sdk/request/auth/proxy", c.APIURL, c.APIVersion)
+	}
+
 	headers := map[string]string{"client_token": c.ClientToken}
 	data := url.Values{
 		"mode":        {c.Session.Mode},
 		"success_url": {c.Session.SuccessURL},
 		"cancel_url":  {c.Session.CancelURL},
 		"job_slug":    {c.Session.JobSlug},
+	}
+
+	if len(c.Session.Proxy) > 0 {
+		proxyData, err := json.Marshal(c.Session.Proxy)
+		if err == nil {
+			data.Set("proxy", string(proxyData))
+		}
 	}
 
 	request, err := http.NewRequest("POST", requestURL, strings.NewReader(data.Encode()))
