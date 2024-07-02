@@ -1,12 +1,11 @@
 package embloy
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
-	"net/url"
-	"strings"
 )
 
 type HTTPClient interface {
@@ -15,11 +14,11 @@ type HTTPClient interface {
 
 // SessionData represents the allowed session values for an EmbloyClient.
 type SessionData struct {
-	Mode       string
-	SuccessURL string
-	CancelURL  string
-	JobSlug    string
-	Proxy      map[string]string // Used for internal purposes. Ignore this field.
+	Mode       string      `json:"mode"`
+	SuccessURL string      `json:"success_url"`
+	CancelURL  string      `json:"cancel_url"`
+	JobSlug    string      `json:"job_slug"`
+	Proxy      interface{} `json:"proxy,omitempty"` // Used for internal purposes. Ignore this field.
 }
 
 // EmbloyClient represents the Embloy API client.
@@ -52,22 +51,25 @@ func (c *EmbloyClient) MakeRequest() (string, error) {
 	}
 
 	headers := map[string]string{"client_token": c.ClientToken}
-	data := url.Values{
-		"mode":        {c.Session.Mode},
-		"success_url": {c.Session.SuccessURL},
-		"cancel_url":  {c.Session.CancelURL},
-		"job_slug":    {c.Session.JobSlug},
+	data := SessionData{
+		Mode:       c.Session.Mode,
+		SuccessURL: c.Session.SuccessURL,
+		CancelURL:  c.Session.CancelURL,
+		JobSlug:    c.Session.JobSlug,
+	}
+	if c.Session.Proxy != nil {
+		data.Proxy = c.Session.Proxy
 	}
 
-	if len(c.Session.Proxy) > 0 {
-		proxyData, err := json.Marshal(c.Session.Proxy)
-		if err == nil {
-			data.Set("proxy", string(proxyData))
-		}
-	}
-
-	request, err := http.NewRequest("POST", requestURL, strings.NewReader(data.Encode()))
+	jsonData, err := json.Marshal(data)
 	if err != nil {
+		fmt.Println("Error marshaling data: ", err)
+		return "", err
+	}
+
+	request, err := http.NewRequest("POST", requestURL, bytes.NewBuffer(jsonData))
+	if err != nil {
+		fmt.Println("Error creating request: ", err)
 		return "", err
 	}
 
