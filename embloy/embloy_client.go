@@ -79,8 +79,7 @@ func (c *EmbloyClient) MakeRequest() (string, error) {
 		request.Header.Set(key, value)
 	}
 
-	request.Header.Set("Content-Type", "application/json")
-	//request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	request.Header.Set("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:122.0) Gecko/20100101 Firefox/122.0")
 
 	response, err := c.HTTPClient.Do(request)
